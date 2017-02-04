@@ -229,13 +229,19 @@ Layer.connection = function LayerConnection(fromLayer, toLayer, type, weights) {
 
   if (this.type == Layer.connectionType.ALL_TO_ALL ||
       this.type == Layer.connectionType.ALL_TO_ELSE) {
+    var weight = undefined
     for (var here in this.from.list) {
       for (var there in this.to.list) {
         var from = this.from.list[here];
         var to = this.to.list[there];
         if(this.type == Layer.connectionType.ALL_TO_ELSE && from == to)
           continue;
-        var connection = from.project(to, weights);
+
+        if (weights !== undefined) {
+           weight = weights[there][here]
+        }  
+
+        var connection = from.project(to, weight);
 
         this.connections[connection.ID] = connection;
         this.size = this.list.push(connection);
